@@ -1,0 +1,29 @@
+#buttonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: auto;
+    padding-top: 50px;
+}
+
+#buttonContainer button {
+    margin: 10px;
+    padding: 30px;
+    font-size: 25px;
+    background-color: lightgreen;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.title {
+    color: beige;
+    text-align: center;
+    margin-top: 50px;
+    width: 100%;
+    font-size: 70px;
+}
+
+body {
+    background-color: #276749;
+}
