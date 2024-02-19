@@ -37,5 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
         timer.style.position = 'fixed';
         timer.style.top = '10px';
         timer.style.right = '10px';
+        timer.style.fontSize = '45px';
     }
 });
