@@ -1,4 +1,4 @@
-# **GEOFIND**
+# **GeoQuest**
 
 **Preferred Way To Compile:**
 
