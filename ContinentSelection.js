@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             document.body.innerHTML = '';
             displayTimer();
-            displayImage('UnitedStates.png');
+            displayImage('United States of America.png');
         });
         container.appendChild(button);
     });
@@ -44,11 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayImage(imageName) {
         const image = document.createElement('img');
         image.src = imageName;
-        image.style.width = '50%';
-        image.style.height = 'auto'; 
-        image.style.transform = 'scale(0.5)';
+        // image.style.transform = 'scale(0.2)';
         image.style.position = 'absolute';
-        image.style.top = '30%';
+        image.style.top = '40%';
         image.style.left = '50%';
         image.style.transform = 'translate(-50%, -50%)';
         document.body.appendChild(image);
