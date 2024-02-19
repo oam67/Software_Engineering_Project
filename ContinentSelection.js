@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             document.body.innerHTML = '';
             displayTimer();
+            displayImage('UnitedStates.png');
         });
         container.appendChild(button);
     });
@@ -38,5 +39,18 @@ document.addEventListener('DOMContentLoaded', function() {
         timer.style.top = '10px';
         timer.style.right = '10px';
         timer.style.fontSize = '45px';
+    }
+
+    function displayImage(imageName) {
+        const image = document.createElement('img');
+        image.src = imageName;
+        image.style.width = '50%';
+        image.style.height = 'auto'; 
+        image.style.transform = 'scale(0.5)';
+        image.style.position = 'absolute';
+        image.style.top = '30%';
+        image.style.left = '50%';
+        image.style.transform = 'translate(-50%, -50%)';
+        document.body.appendChild(image);
     }
 });
