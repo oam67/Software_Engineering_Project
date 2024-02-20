@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const continents = ['Africa', 'Asia', 'Oceania', 'Europe', 'North America', 'South America'];
     const container = document.getElementById('buttonContainer');
+    let guessBox;
 
     continents.forEach(continent => {
         const button = document.createElement('button');
@@ -37,8 +38,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const timerInterval = setInterval(updateTimer, 1000);
 
         timer.style.position = 'fixed';
-        timer.style.top = '10px';
-        timer.style.right = '10px';
+        timer.style.top = '0%';
+        timer.style.right = '0%';
         timer.style.fontSize = '45px';
     }
 
@@ -64,6 +65,8 @@ document.addEventListener('DOMContentLoaded', function () {
         subButton.addEventListener('click', function () {
             const userInput = guessBox.value;
             console.log('User guess:', userInput);
+            displayHotOrCold(userInput);
+            guessBox.value = '';
         });
 
         const container = document.createElement('div');
@@ -75,6 +78,31 @@ document.addEventListener('DOMContentLoaded', function () {
         container.style.top = '70%';
         container.style.left = '50%';
         container.style.transform = 'translate(-50%, -50%)';
+    }
+
+    function displayHotOrCold(country) {
+        value = document.getElementById('result');
+
+        if (!value) {
+            value = document.createElement('div');
+            value.id = 'result';
+            document.body.appendChild(value);
+        }
+
+        if (country === 'Mexico' || country === 'Canada' || country === 'Cuba' || country === 'Russia' || country === 'The Bahamas'){
+            value.innerHTML = 'Hot';
+            value.style.color = 'red';
+        }
+        else{
+            value.innerHTML = 'Cold';
+            value.style.color = 'blue';
+        }
+
+        value.style.position = 'fixed';
+        value.style.top = '80%';
+        value.style.left = '50%';
+        value.style.transform = 'translate(-50%, -50%)';
+        value.style.fontSize = '30px';
     }
 
 });
