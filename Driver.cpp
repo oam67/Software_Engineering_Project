@@ -1,7 +1,7 @@
 #include <cstdlib>
 
 int main() {
-    const char* command = "open ContinentSelection.html";
+    const char* command = "open GameModeSelection.html";
 
     int result = system(command);
 
