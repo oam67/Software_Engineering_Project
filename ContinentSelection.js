@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
     const labelContainer = document.getElementById('labelContainer');
     let guessBox;
+    let guesses = [];
+    let correctGuess = 'United States'
 
     continents.forEach(continent => {
         const label = document.createElement('div');
@@ -70,9 +72,19 @@ document.addEventListener('DOMContentLoaded', function () {
         subButton.addEventListener('click', function () {
             const userInput = guessBox.value;
             console.log('User guess:', userInput);
-            displayHotOrCold(userInput);
             guessBox.value = '';
+            if (userInput != correctGuess){
+                displayHotOrCold(userInput);
+                guesses.push(userInput);
+                displayPrevGuesses();
+            }
+            else {
+                guesses = [];
+                removeGuessesContainer();
+                removeHotOrCold();
+            }
         });
+        
         const container = document.createElement('div');
         container.appendChild(guessBox);
         container.appendChild(subButton);
@@ -97,10 +109,50 @@ document.addEventListener('DOMContentLoaded', function () {
             value.innerHTML = 'Cold';
             value.style.color = 'blue';
         }
-        value.style.position = 'fixed';
+        value.style.position = 'absolute';
         value.style.top = '80%';
         value.style.left = '50%';
         value.style.transform = 'translate(-50%, -50%)';
         value.style.fontSize = '30px';
+    }
+
+    function removeHotOrCold() {
+        const value = document.getElementById('result');
+        value.innerHTML = '';
+    }
+
+    function displayPrevGuesses() {
+        let guessesContainer = document.getElementById('guessesContainer');
+        
+        if (!guessesContainer) {
+            guessesContainer = document.createElement('div');
+            guessesContainer.id = 'guessesContainer';
+            document.body.appendChild(guessesContainer);
+            
+            guessesContainer.style.position = 'absolute';
+            guessesContainer.style.top = '80%';
+            guessesContainer.style.left = '50%';
+            guessesContainer.style.transform = 'translate(-50%, -10%)';
+            guessesContainer.style.border = '1px solid #ddd';
+            guessesContainer.style.padding = '10px';
+            guessesContainer.style.marginTop = '20px'; 
+            guessesContainer.style.backgroundColor = '#f9f9f9';
+        }
+        
+        guessesContainer.innerHTML = '';
+        
+        guesses.forEach(guess => {
+            const guessElement = document.createElement('div');
+            guessElement.textContent = guess;
+            guessesContainer.appendChild(guessElement);
+            console.log('User guess:', guessElement);
+        });
+    }
+
+    function removeGuessesContainer() {
+        const guessesContainer = document.getElementById('guessesContainer');
+        if (guessesContainer) {
+            guessesContainer.remove();
+        }
     }
 });
