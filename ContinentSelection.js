@@ -10,7 +10,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const labelContainer = document.getElementById('labelContainer');
     let guessBox;
     let guesses = [];
-    let correctGuess = 'United States'
+    let correctGuess = 'United States';
+    let timerInterval;
+    let timeLeft = 60;
 
     continents.forEach(continent => {
         const label = document.createElement('div');
@@ -32,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function displayTimer() {
         const timer = document.createElement('div');
         document.body.appendChild(timer);
-        let timeLeft = 60;
 
         function updateTimer() {
             timer.innerHTML = 'Timer: ' + timeLeft + ' seconds';
@@ -76,9 +77,21 @@ document.addEventListener('DOMContentLoaded', function () {
             if (userInput != correctGuess){
                 displayHotOrCold(userInput);
                 guesses.push(userInput);
+                timeLeft -= 5;
                 displayPrevGuesses();
+                const timer = document.querySelector('div[style*="position: fixed"]');
+                timer.style.color = 'red';
+                setTimeout(() => {
+                    timer.style.color = timeLeft <= 10 ? 'red' : 'black';
+                }, 2000);
             }
             else {
+                timeLeft += 5;
+                const timer = document.querySelector('div[style*="position: fixed"]');
+                timer.style.color = 'green';
+                setTimeout(() => {
+                    timer.style.color = timeLeft <= 10 ? 'green' : 'black';
+                }, 2000);
                 guesses = [];
                 removeGuessesContainer();
                 removeHotOrCold();
