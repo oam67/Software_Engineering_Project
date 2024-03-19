@@ -1,0 +1,16 @@
+name: check on merge
+
+on: 
+  push:
+      branches: [ main ]
+
+jobs: 
+
+  open:
+
+    runs-on: Oams-MacBook-Air
+
+    steps:
+    - uses: actions/checkout@v2
+    
+  
