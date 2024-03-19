@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let correctGuess = 'United States';
     let timerInterval;
     let timeLeft = 60;
+    let score = 0;
 
     continents.forEach(continent => {
         const label = document.createElement('div');
@@ -24,12 +25,32 @@ document.addEventListener('DOMContentLoaded', function () {
         label.addEventListener('click', function () {
             document.body.innerHTML = '';
             displayTimer();
+            displayScore();
             displayImage('United States of America.png');
             displayGuessBox();
         });
 
         labelContainer.appendChild(label);
     });
+
+    function displayScore(){
+        let userScore = document.getElementById('userScore');
+        if (!userScore) {
+            userScore = document.createElement('div');
+            userScore.id = 'userScore';
+            document.body.appendChild(userScore);
+        }
+
+        function updateScore() {
+            userScore.innerHTML = "Score: " + score; 
+        }
+
+        updateScore();
+        userScore.style.position = 'fixed';
+        userScore.style.top = '0%';
+        userScore.style.left = '0%';
+        userScore.style.fontSize = '45px';
+    }
 
     function displayTimer() {
         const timer = document.createElement('div');
@@ -87,6 +108,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             else {
                 timeLeft += 5;
+                score += 10;
+                displayScore();
                 const timer = document.querySelector('div[style*="position: fixed"]');
                 timer.style.color = 'green';
                 setTimeout(() => {
