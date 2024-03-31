@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+
     const continents = [
         { name: 'Africa', position: { left: '53%', top: '60%' } },
         { name: 'Asia', position: { left: '72%', top: '37%' } },
@@ -10,7 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const labelContainer = document.getElementById('labelContainer');
     let guessBox;
     let guesses = [];
-    let correctGuess = 'United States';
+    // let correctGuess = 'United States';
+    let correctGuess = " ";
+    let chosenContinent = " ";
+    let countryImagePath = " ";
     let timerInterval;
     let timeLeft = 60;
 
@@ -22,14 +26,83 @@ document.addEventListener('DOMContentLoaded', function () {
         label.style.top = continent.position.top;
 
         label.addEventListener('click', function () {
-            document.body.innerHTML = '';
-            displayTimer();
-            displayImage('United States of America.png');
-            displayGuessBox();
+            chosenContinent = continent.name;
+            
+            randomizeCountry('game_dataset.xlsx')
+                .then(randomResults => {
+                    console.log(randomResults);
+                    if (randomResults !== null) {
+                        correctGuess = randomResults.correctGuess;
+                        countryImagePath = randomResults.countryImagePath;
+                        console.log(correctGuess);
+                        
+                        document.body.innerHTML = '';
+                        displayTimer();
+                        displayImage(countryImagePath);
+                        displayGuessBox();
+                    } else {
+                        console.log('No data found for the selected continent.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
 
         labelContainer.appendChild(label);
     });
+
+
+
+
+
+
+    
+
+    async function randomizeCountry(filePath) {
+        try {
+          const response = await fetch(filePath);
+      
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+      
+          const arrayBuffer = await response.arrayBuffer();
+          const data = new Uint8Array(arrayBuffer);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+      
+          const filteredData = jsonData.filter(row => row.Continent === chosenContinent);
+      
+          if (filteredData.length === 0) {
+            console.log('No data found for the selected continent.');
+            return null;
+          }
+      
+          const randomRowIndex = Math.floor(Math.random() * filteredData.length);
+          const randomRow = filteredData[randomRowIndex];
+      
+          return {
+            correctGuess: randomRow.Country,
+            countryImagePath: randomRow['Image Path']
+          }
+
+      
+        } catch (error) {
+          console.error('Error:', error);
+          return null;
+        }
+      }
+
+
+
+
+
+
+
+
 
     function displayTimer() {
         const timer = document.createElement('div');
@@ -71,21 +144,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const subButton = document.createElement('button');
         subButton.textContent = 'Submit Guess';
         subButton.addEventListener('click', function () {
-            const userInput = guessBox.value;
+            const userInput = guessBox.value.trim();
             console.log('User guess:', userInput);
             guessBox.value = '';
-            if (userInput != correctGuess){
-                displayHotOrCold(userInput);
-                guesses.push(userInput);
-                timeLeft -= 5;
-                displayPrevGuesses();
-                const timer = document.querySelector('div[style*="position: fixed"]');
-                timer.style.color = 'red';
-                setTimeout(() => {
-                    timer.style.color = timeLeft <= 10 ? 'red' : 'black';
-                }, 2000);
-            }
-            else {
+            if (userInput.toLowerCase() === correctGuess.toLowerCase()) {
                 timeLeft += 5;
                 const timer = document.querySelector('div[style*="position: fixed"]');
                 timer.style.color = 'green';
@@ -95,6 +157,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 guesses = [];
                 removeGuessesContainer();
                 removeHotOrCold();
+
+                randomizeCountry('game_dataset.xlsx')
+                .then(randomResults => {
+                    console.log(randomResults);
+                    if (randomResults !== null) {
+                        correctGuess = randomResults.correctGuess;
+                        countryImagePath = randomResults.countryImagePath;
+                        console.log(correctGuess);
+                        
+                        displayImage(countryImagePath);
+                    } else {
+                        console.log('No data found for the selected continent.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+
+            } else {
+                displayHotOrCold(userInput);
+                guesses.push(userInput);
+                timeLeft -= 5;
+                displayPrevGuesses();
+                const timer = document.querySelector('div[style*="position: fixed"]');
+                timer.style.color = 'red';
+                setTimeout(() => {
+                    timer.style.color = timeLeft <= 10 ? 'red' : 'black';
+                }, 2000);
             }
         });
         
@@ -131,7 +222,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function removeHotOrCold() {
         const value = document.getElementById('result');
-        value.innerHTML = '';
+        if (value) { 
+            value.innerHTML = '';
+        }
     }
 
     function displayPrevGuesses() {
