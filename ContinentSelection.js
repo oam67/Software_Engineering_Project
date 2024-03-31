@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let countryImagePath = " ";
     let timerInterval;
     let timeLeft = 60;
+    let score = 0;
+
 
     continents.forEach(continent => {
         const label = document.createElement('div');
@@ -38,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         
                         document.body.innerHTML = '';
                         displayTimer();
+                        displayScore();
                         displayImage(countryImagePath);
                         displayGuessBox();
                     } else {
@@ -53,11 +56,26 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
+    function displayScore(){
+        let userScore = document.getElementById('userScore');
+        if (!userScore) {
+            userScore = document.createElement('div');
+            userScore.id = 'userScore';
+            document.body.appendChild(userScore);
+        }
+
+        function updateScore() {
+            userScore.innerHTML = "Score: " + score; 
+        }
+
+        updateScore();
+        userScore.style.position = 'fixed';
+        userScore.style.top = '0%';
+        userScore.style.left = '0%';
+        userScore.style.fontSize = '45px';
+    }
 
 
-
-
-    
 
     async function randomizeCountry(filePath) {
         try {
@@ -95,12 +113,6 @@ document.addEventListener('DOMContentLoaded', function () {
           return null;
         }
       }
-
-
-
-
-
-
 
 
 
@@ -149,6 +161,8 @@ document.addEventListener('DOMContentLoaded', function () {
             guessBox.value = '';
             if (userInput.toLowerCase() === correctGuess.toLowerCase()) {
                 timeLeft += 5;
+                score += 10;
+                displayScore();
                 const timer = document.querySelector('div[style*="position: fixed"]');
                 timer.style.color = 'green';
                 setTimeout(() => {
