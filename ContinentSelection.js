@@ -16,10 +16,12 @@ document.addEventListener('DOMContentLoaded', function () {
     let chosenContinent = " ";
     let countryImagePath = " ";
     let chosenCountriesIndexes = [];
+    let gameMode = sessionStorage.getItem('gameMode');
     let timerInterval;
     let timeLeft = 60;
     let score = 0;
 
+    console.log("Selected Game Mode: ", gameMode);
 
     continents.forEach(continent => {
         const label = document.createElement('div');
@@ -42,7 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         document.body.innerHTML = '';
                         displayTimer();
                         displayScore();
-                        displayImage(countryImagePath);
+                        displayImage(countryImagePath, sessionStorage.getItem('gameMode') === 'hard' ? 100 : 40);
+
                         displayGuessBox();
                     } else {
                         console.log('No data found for the selected continent.');
@@ -55,7 +58,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         labelContainer.appendChild(label);
     });
-
 
     function displayScore(){
         let userScore = document.getElementById('userScore');
@@ -116,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
             return {
                 correctGuess: randomRow.Country,
-                countryImagePath: randomRow['Image Path']
+                countryImagePath: gameMode === 'hard' ? randomRow['Image Path'] : randomRow['Easy Image Path']
             };
         } catch (error) {
             console.error('Error:', error);
@@ -147,13 +149,15 @@ document.addEventListener('DOMContentLoaded', function () {
         timer.style.fontSize = '45px';
     }
 
-    function displayImage(imageName) {
+    function displayImage(imageName, scalePercentage) {
         const image = document.createElement('img');
         image.src = imageName;
         image.style.position = 'absolute';
         image.style.top = '40%';
         image.style.left = '50%';
-        image.style.transform = 'translate(-50%, -50%)';
+
+        const scaleFactor = scalePercentage / 100;
+        image.style.transform = `translate(-50%, -50%) scale(${scaleFactor})`;
         document.body.appendChild(image);
     }
 
@@ -189,7 +193,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         countryImagePath = randomResults.countryImagePath;
                         console.log(correctGuess);
                         
-                        displayImage(countryImagePath);
+                        displayImage(countryImagePath, sessionStorage.getItem('gameMode') === 'hard' ? 100 : 40);
+
                     } else {
                         console.log('No data found for the selected continent.');
                     }
@@ -217,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function () {
         container.appendChild(subButton);
         document.body.appendChild(container);
         container.style.position = 'absolute';
-        container.style.top = '70%';
+        container.style.top = '80%';
         container.style.left = '50%';
         container.style.transform = 'translate(-50%, -50%)';
     }
@@ -237,8 +242,8 @@ document.addEventListener('DOMContentLoaded', function () {
             value.style.color = 'blue';
         }
         value.style.position = 'absolute';
-        value.style.top = '80%';
-        value.style.left = '50%';
+        value.style.top = '25%';
+        value.style.left = '15%';
         value.style.transform = 'translate(-50%, -50%)';
         value.style.fontSize = '30px';
     }
@@ -259,8 +264,8 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.appendChild(guessesContainer);
             
             guessesContainer.style.position = 'absolute';
-            guessesContainer.style.top = '80%';
-            guessesContainer.style.left = '50%';
+            guessesContainer.style.top = '30%';
+            guessesContainer.style.left = '15%';
             guessesContainer.style.transform = 'translate(-50%, -10%)';
             guessesContainer.style.border = '1px solid #ddd';
             guessesContainer.style.padding = '10px';
