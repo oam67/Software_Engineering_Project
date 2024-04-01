@@ -150,12 +150,20 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function displayImage(imageName, scalePercentage) {
+        // Check if an image with the id 'countryImage' already exists and remove it if it does
+        let existingImage = document.getElementById('countryImage');
+        if (existingImage) {
+            existingImage.remove();
+        }
+    
+        // Create a new image element
         const image = document.createElement('img');
+        image.id = 'countryImage'; // Assign an id to the image for easy access
         image.src = imageName;
         image.style.position = 'absolute';
         image.style.top = '40%';
         image.style.left = '50%';
-
+    
         const scaleFactor = scalePercentage / 100;
         image.style.transform = `translate(-50%, -50%) scale(${scaleFactor})`;
         document.body.appendChild(image);
