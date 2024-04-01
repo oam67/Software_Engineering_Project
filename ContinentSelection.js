@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let correctGuess = " ";
     let chosenContinent = " ";
     let countryImagePath = " ";
+    let chosenCountriesIndexes = [];
     let timerInterval;
     let timeLeft = 60;
     let score = 0;
@@ -76,44 +77,52 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-
     async function randomizeCountry(filePath) {
         try {
-          const response = await fetch(filePath);
-      
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-      
-          const arrayBuffer = await response.arrayBuffer();
-          const data = new Uint8Array(arrayBuffer);
-          const workbook = XLSX.read(data, { type: 'array' });
-          const sheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(worksheet);
-      
-          const filteredData = jsonData.filter(row => row.Continent === chosenContinent);
-      
-          if (filteredData.length === 0) {
-            console.log('No data found for the selected continent.');
-            return null;
-          }
-      
-          const randomRowIndex = Math.floor(Math.random() * filteredData.length);
-          const randomRow = filteredData[randomRowIndex];
-      
-          return {
-            correctGuess: randomRow.Country,
-            countryImagePath: randomRow['Image Path']
-          }
-
-      
+            const response = await fetch(filePath);
+    
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+    
+            const arrayBuffer = await response.arrayBuffer();
+            const data = new Uint8Array(arrayBuffer);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+    
+            const filteredData = jsonData.filter(row => row.Continent === chosenContinent);
+    
+            if (filteredData.length === 0) {
+                console.log('No data found for the selected continent.');
+                return null;
+            }
+    
+            let randomRowIndex;
+            let attempts = 0; 
+            do {
+                randomRowIndex = Math.floor(Math.random() * filteredData.length);
+                attempts++;
+                if (attempts > filteredData.length) {
+                    console.log('No new countries left to randomize.');
+                    return null;
+                }
+            } while (chosenCountriesIndexes.includes(randomRowIndex));
+    
+            const randomRow = filteredData[randomRowIndex];
+    
+            chosenCountriesIndexes.push(randomRowIndex);
+    
+            return {
+                correctGuess: randomRow.Country,
+                countryImagePath: randomRow['Image Path']
+            };
         } catch (error) {
-          console.error('Error:', error);
-          return null;
+            console.error('Error:', error);
+            return null;
         }
-      }
-
+    }
 
 
     function displayTimer() {
