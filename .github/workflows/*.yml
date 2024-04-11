@@ -16,17 +16,20 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up C++ environment
-      uses: actions/setup-cpp@v2
+    - name: Install C++ Compiler
+      run: |
+        brew install llvm
 
     - name: Compile C++ code
       run: |
-        if [ -e *.cpp ]; then
-          clang++ Driver.cpp -o Driver
+        if ls *.cpp 1> /dev/null 2>&1; then
+          clang++ -std=c++11 Driver.cpp -o Driver
         fi
 
     - name: Save executable
-      if: success() && -e my_program
+      if: success() && runner.os == 'macOS'
       run: |
-        mkdir -p executables
-        mv my_program executables/
+        if [ -e Driver ]; then
+          mkdir -p executables
+          mv Driver executables/
+        fi
