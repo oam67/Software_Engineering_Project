@@ -6,6 +6,8 @@
 #include <sstream>
 #include <algorithm>
 #include <iterator>
+#include <array>
+#include <vector>
 
 std::string exec(const char* cmd) {
     std::array<char, 128> buffer;
