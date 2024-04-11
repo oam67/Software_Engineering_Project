@@ -1,16 +1,32 @@
-name: check on merge
+name: Compile and Save Executable
 
-on: 
+on:
   push:
-      branches: [ main ]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
-jobs: 
-
-  open:
-
-    runs-on: Oams-MacBook-Air
+jobs:
+  build:
+    runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v2
-    
-  
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up C++ environment
+      uses: actions/setup-cpp@v2
+
+    - name: Compile C++ code
+      run: |
+        if [ -e *.cpp ]; then
+          clang++ Driver.cpp -o Driver
+        fi
+
+    - name: Save executable
+      if: success() && -e my_program
+      run: |
+        mkdir -p executables
+        mv my_program executables/
