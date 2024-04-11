@@ -21,12 +21,13 @@ jobs:
 
     - name: Compile C++ code
       run: |
-        if [ -e *.cpp ]; then
+        if [ -e Driver.cpp ]; then
           clang++ Driver.cpp -o Driver
         fi
 
     - name: Save executable
-      if: success() && -e my_program
       run: |
-        mkdir -p executables
-        mv my_program executables/
+        if [ -e Driver ]; then
+          mkdir -p executables
+          mv Driver executables/
+        fi
