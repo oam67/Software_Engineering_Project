@@ -22,14 +22,10 @@ jobs:
 
     - name: Compile C++ code
       run: |
-        if ls *.cpp 1> /dev/null 2>&1; then
-          clang++ -std=c++11 Driver.cpp -o Driver
-        fi
+        clang++ -std=c++11 Driver.cpp -o Driver
 
     - name: Save executable
       if: success() && runner.os == 'macOS'
       run: |
         mkdir -p executables
-        if [ -e Driver ]; then
-          mv Driver executables/
-        fi
+        mv Driver executables/
