@@ -29,7 +29,7 @@ jobs:
     - name: Save executable
       if: success() && runner.os == 'macOS'
       run: |
+        mkdir -p executables
         if [ -e Driver ]; then
-          mkdir -p executables
           mv Driver executables/
         fi
