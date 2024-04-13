@@ -64,6 +64,8 @@ public:
     void computeHint(string guess);
 
     bool isGameOver();
+
+    string getImage();
 };
 
 void GeoQuest::setMode(const string& mode) {
@@ -222,4 +224,20 @@ bool GeoQuest::isGameOver() {
     else {
         return false;
     }
+}
+
+string GeoQuest::getImage() {
+
+    auto it = find_if(filteredData.begin(), filteredData.end(), [this](const vector<string>& row) {
+        return row.size() > 3 && row[3] == this->currentCountry;
+    });
+
+    if (gameMode == "Easy"){
+        return (*it)[7];
+    }
+
+    if (gameMode == "Hard"){
+        return (*it)[6];
+    }
+
 }
