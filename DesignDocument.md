@@ -1,157 +1,94 @@
-# Strategy Design Pattern
-## Geo Quest will utilize the strategy design pattern for its Easy and Hard game modes. Both the Easy and Hard classes will implement the GameMode interface. The Game class will contain a GameMode object and call methods on the GameMode object. Including this level of abstraction in the design allows for a streamlined way of including future game modes in the application.
+# Logical View
+## Emscripten is used to compile c++ code to WebAssembly which is called by the Game Mode Selection Screen and the Game Screen. The Continent Selection Screen and the Score Board Screen are not directly connected to the backend logic, and therefore, are stand-alone components in the logical view. 
 ```mermaid
 classDiagram
-    Game --> GameMode : has-a
-    GameMode <|-- Easy : implements
-    GameMode <|-- Hard : implements
-    
-    class Game{
-        makeGuess()
-        showCountry()
-        showFeedback()
-        startTimer()
-        updateTimer()
-        updateScore()
-        isCorrect()
-        isGameOver()
+    class GeoQuestWrapper {
+        JsonStack()
+        readCSV()
+        game_dataset.csv
+    }
+    class WebAssembly {
+    }
+    class gameModeSelection {
+        startGame()
+    }
+    class continentSelection {
+        setContinent()
+        getContinent()
+        filterData()
+    }
+    class Game {
+        shuffleArray()
+        generateHint()
+        popAndDisplayNextCountry()
+        getImagePath()
+        storeScore()
+    }
+    class scoreBoard {
+        setHighScore()
+        getHighScores()
+        playAgain()
+        quitGame()
     }
 
-    class GameMode{
-        <<interface>>
-        makeGuess()
-        showCountry()
-        showFeedback()
-        startTimer()
-        updateTimer()
-        updateScore()
-        isCorrect()
-        isGameOver()
-    }
-
-    class Easy{
-        makeGuess()
-        showCountry()
-        showFeedback()
-        startTimer()
-        updateTimer()
-        updateScore()
-        isCorrect()
-        isGameOver()
-    }
-    
-    class Hard{
-        makeGuess()
-        showCountry()
-        showFeedback()
-        startTimer()
-        updateTimer()
-        updateScore()
-        isCorrect()
-        isGameOver()
-    }
+    GeoQuestWrapper --> WebAssembly
+    WebAssembly --> gameModeSelection
+    WebAssembly --> Game
 ```
 
-# Observer Design Pattern
-## Geo Quest will utilize the observer design pattern to create a relationship between the game mode classes and the game screen. The Easy and Hard classes will be the concrete subjects and the GameScreenGUI class will be the concrete observer. The Easy and Hard classes will register the GameScreenGUI as an observer, and upon user input GameScreenGUI will call update on the game mode class it contains.
-
+# Use Case Diagram
+## This diagram demonstrates how a user interacts with the GeoQuest software. It walks through how a user would play the game.
 ```mermaid
-classDiagram
-    GameScreenGUI --> Easy :has-a
-    GameScreenGUI --> Hard :has-a
-    GameScreenGUI --|> Observer :implements
-    Easy --|> Subject :implements
-    Hard --|> Subject :implements
-    Easy --> Observer :has-a
-    Hard --> Observer :has-a
+graph LR;
+    USER[User]
+    SelectGameMode[Select Game Mode]
+    SelectContinent[Select Continent]
+    MakeGuess[Make Guess]
+    Quit[Quit]
+    PlayAgain[Play Again]
 
-    class Subject{
-      <<interface>>
-      register(Observer)
-      unregister(Observer)
-      notifyObservers()
-    }
-
-    class Observer{
-      <<interface>>
-      update()
-    }
-    
-    class GameScreenGUI{
-        update()
-    }
-
-    class Easy{
-        register(Observer)
-        unregister(Observer)
-        notifyObservers()
-        makeGuess()
-        showCountry()
-        showFeedback()
-        startTimer()
-        updateTimer()
-        updateScore()
-        isCorrect()
-        isGameOver()
-    }
-
-    class Hard{
-        register(Observer)
-        unregister(Observer)
-        notifyObservers()
-        makeGuess()
-        showCountry()
-        showFeedback()
-        startTimer()
-        updateTimer()
-        updateScore()
-        isCorrect()
-        isGameOver()
-    }
+    USER -->|Select Easy| SelectGameMode
+    USER -->|Select Hard| SelectGameMode
+    SelectGameMode -->|Select North America| SelectContinent
+    SelectGameMode -->|Select South America| SelectContinent
+    SelectGameMode -->|Select Europe| SelectContinent
+    SelectGameMode -->|Select Africa| SelectContinent
+    SelectGameMode -->|Select Asia| SelectContinent
+    SelectGameMode -->|Select Oceania| SelectContinent
+    SelectContinent -->|Make Correct Guess| MakeGuess
+    SelectContinent -->|Make Incorrect Guess| MakeGuess
+    MakeGuess -->|Decide to Quit| Quit
+    MakeGuess -->|Decide to Play Again| PlayAgain
 ```
 
-# Adapter Design Pattern
-## Geo Quest will utilize the adapter design pattern to ensure the game has database flexibility in the future.  The MySqlAdapter class will implement the DatabaseInterface. Each game mode class, Easy and Hard, will contain a DatabaseInterface object. This allows another database to be easily incorporated into the game later in development.
-
+# GUI Routing
+## This diagram demonstrates how the GUI components of GeoQuest are routed from one component to the next.
 ```mermaid
 classDiagram
-    MySqlAdapter --|> DatabaseInterface :implements
-    Easy --> DatabaseInterface :has-a
-    Hard --> DatabaseInterface :has-a
-
-    class DatabaseInterface{
-        <<interface>>
-        connect()
-        disconnect()
-        query()
+    class gameModeSelection {
+        startGame()
+    }
+    class continentSelection {
+        setContinent()
+        getContinent()
+        filterData()
+    }
+    class Game {
+        shuffleArray()
+        generateHint()
+        popAndDisplayNextCountry()
+        getImagePath()
+        storeScore()
+    }
+    class scoreBoard {
+        setHighScore()
+        getHighScores()
+        playAgain()
+        quitGame()
     }
 
-    class MySqlAdapter{
-        connect()
-        disconnect()
-        query()
-    }
-
-    class Easy{
-        makeGuess()
-        showCountry()
-        showFeedback()
-        startTimer()
-        updateTimer()
-        updateScore()
-        isCorrect()
-        isGameOver()
-    }
-
-    class Hard{
-        makeGuess()
-        showCountry()
-        showFeedback()
-        startTimer()
-        updateTimer()
-        updateScore()
-        isCorrect()
-        isGameOver()
-    }
-
+    gameModeSelection --> continentSelection
+    continentSelection --> Game
+    Game --> scoreBoard
+    scoreBoard --> gameModeSelection
 ```
